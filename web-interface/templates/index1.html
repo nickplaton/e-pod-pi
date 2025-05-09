@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Collection</title>
+    <style>
+        .running { background-color: green; color: white;}
+        .stopped { background-color: red; color: white;}
+    </style>
+</head>
+<body>
+    <h1>Temperature Control and Collection</h1>
+    <form action="{{ url_for('start_data_collection') }}" method="get">
+        <button type="submit" class="{{ 'running' if data_collection_running else 'stopped' }}">Collect Data Only</button>
+    </form>
+    <form action="{{ url_for('stop_data_collection') }}" method="get">
+        <button type="submit">Stop Data Collection</button>
+    </form>
+    <form action="{{ url_for('start_temp_set') }}" method="post">
+        <button type="submit" class="{{ 'running' if temp_set_running else 'stopped' }}">Set Temperature Only</button>
+        <input type="number" name="temp-goal" required value="25"> Temperature</input>
+        <input type="checkbox" name="heater-state">Are the chicken coop heaters currently on?</input>
+    </form>
+    <form action="{{ url_for('stop_temp_set') }}" method="get">
+        <button type="submit">Stop Temperature Control</button>
+    </form>
+    <form action="{{ url_for('start_temp_set_collection') }}" method="post">
+        <button type="submit" class="{{ 'running' if temp_set_collection_running else 'stopped' }}">Set Temperature and Collect Data</button>
+        <input type="number" name="temp-goal" required value="25"> Temperature</input>
+        <input type="checkbox" name="heater-state">Are the chicken coop heaters currently on?</input>
+    </form>
+    <form action="{{ url_for('stop_temp_set_collection') }}" method="get">
+        <button type="submit">Stop Temperature Control</button>
+    </form>
+    <form action="{{ url_for('stop_all_processes') }}" method="get">
+        <button type="submit">Stop All</button>
+    </form>
+    <h2>Plot Data</h2>
+    <a href="/plot" target="_blank">View Plot</a>
+</body>
+</html>

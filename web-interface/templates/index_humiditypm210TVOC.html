@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Collection</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+        h1, h2 {
+            text-align: center;
+            color: #000000;
+        }
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+        }
+        .form-group input[type="number"],
+        .form-group input[type="checkbox"],
+        .form-group button {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        .form-group input[type="checkbox"] {
+            width: auto;
+            margin-top: 10px;
+        }
+        .form-group button {
+            background-color: red;
+            color: white;
+            cursor: pointer;
+            border: none;
+            transition: background-color 0.3s ease;
+        }
+        .form-group button:hover {
+            background-color: #a1a1a1;
+        }
+        .form-group .running {
+            background-color: green;
+        }
+        .form-group .stopped {
+            background-color: #afafaf;
+        }
+        .form-group .onstopper {
+            background-color: red;
+        }
+        .form-group .offstopper {
+            background-color: #afafaf;
+        }
+        .button-container {
+            display: flex;
+            justify-content: space-between;
+        }
+        .button-container a {
+            text-decoration: none;
+            color: #4CAF50;
+            font-size: 18px;
+        }
+        .button-container a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <h1>Automated Processes</h1>
+    <div class="container">
+        <h2>Measure Temperature</h2>
+        <form action="{{ url_for('start_temp_collection') }}" method="get" class="form-group">
+            <button type="submit" class="{{ 'running' if temp_collection_running or temp_set_collection_running else 'stopped' }}">Start Temp Collection</button>
+        </form>
+        <form action="{{ url_for('stop_temp_collection') }}" method="get" class="form-group">
+            <button type="submit" class="{{ 'onstopper' if temp_collection_running or temp_set_collection_running else 'offstopper' }}">Stop Temp Collection</button>
+        </form>
+        <h2>Measure Humidity</h2>
+        <form action="{{ url_for('start_humidity_collection') }}" method="get" class="form-group">
+            <button type="submit" class="{{ 'running' if humidity_collection_running or temp_set_collection_running else 'stopped' }}">Start Humidity Collection</button>
+        </form>
+        <form action="{{ url_for('stop_humidity_collection') }}" method="get" class="form-group">
+            <button type="submit" class="{{ 'onstopper' if humidity_collection_running or temp_set_collection_running else 'offstopper' }}">Stop Humidity Collection</button>
+        </form>
+        <h2>Measure PM2-10 Air Quality</h2>
+        <form action="{{ url_for('start_pm210_collection') }}" method="get" class="form-group">
+            <button type="submit" class="{{ 'running' if pm210_collection_running or temp_set_collection_running else 'stopped' }}">Start PM2-10 Collection</button>
+        </form>
+        <form action="{{ url_for('stop_pm210_collection') }}" method="get" class="form-group">
+            <button type="submit" class="{{ 'onstopper' if pm210_collection_running or temp_set_collection_running else 'offstopper' }}">Stop PM2-10 Collection</button>
+        </form>
+        <h2>Measure TVOC Air Quality</h2>
+        <form action="{{ url_for('start_tvoc_collection') }}" method="get" class="form-group">
+            <button type="submit" class="{{ 'running' if tvoc_collection_running or temp_set_collection_running else 'stopped' }}">Start TVOC Collection</button>
+        </form>
+        <form action="{{ url_for('stop_tvoc_collection') }}" method="get" class="form-group">
+            <button type="submit" class="{{ 'onstopper' if tvoc_collection_running or temp_set_collection_running else 'offstopper' }}">Stop TVOC Collection</button>
+        </form>
+    </div>
+    <h1>Manual Control</h1>
+    <div class="container">
+        <h2>Chicken Coop Heater</h2>
+        <form action="{{ url_for('heater_power') }}" method="get" class="form-group">
+            <button type="submit" class="stopped">Toggle Chicken Coop Heater Power</button>
+        </form>
+    </div>
+    <div class="container">
+        <h2>Fan</h2>
+        <h3>Power</h3>
+        <form action="{{ url_for('fan_power') }}" method="get" class="form-group">
+            <button type="submit" class="stopped">Toggle Fan Power</button>
+        </form>
+        <h3>Speed</h3>
+        <form action="{{ url_for('fan_max') }}" method="get" class="form-group">
+            <button type="submit" class="stopped">High Speed</button>
+        </form>
+        <form action="{{ url_for('fan_med') }}" method="get" class="form-group">
+            <button type="submit" class="stopped">Medium Speed</button>
+        </form>
+        <form action="{{ url_for('fan_min') }}" method="get" class="form-group">
+            <button type="submit" class="stopped">Low Speed</button>
+        </form>
+    </div>
+    <h1>Data</h1>
+    <div class="container">
+        <div class="button-container">
+            <a href="/plot" target="_blank">View Plot</a>
+        </div>
+    </div>
+    <div class="container">
+        <form action="{{ url_for('backup') }}" method="get" class="form-group">
+            <button type="submit" class="stopped">Backup Data</button>
+        </form>
+        <form action="{{ url_for('reset_and_backup') }}" method="get" class="form-group">
+            <button type="submit" class="stopped">Backup and Reset Data</button>
+        </form>
+    </div>
+</body>
+</html>
